@@ -1,0 +1,246 @@
+using System;
+
+using System.Collections.Generic;
+
+
+
+namespace FirstGame
+
+{
+
+    interface IEngine
+
+    {
+
+        void Start();
+
+        void Stop();
+
+        void Accelerate();
+
+    }
+
+
+
+    class PetrolEngine : IEngine
+
+    {
+
+        public void Start() => Console.WriteLine("Petrol engine roars to life.");
+
+        public void Stop() => Console.WriteLine("Petrol engine shuts down.");
+
+        public void Accelerate() => Console.WriteLine("Petrol engine is accelerating.");
+
+    }
+
+
+
+    class ElectricEngine : IEngine
+
+    {
+
+        public void Start() => Console.WriteLine("Electric engine starts silently.");
+
+        public void Stop() => Console.WriteLine("Electric engine powers down.");
+
+        public void Accelerate() => Console.WriteLine("Electric engine accelerates smoothly.");
+
+    }
+
+
+
+    class Wheel
+
+    {
+
+        public string Position { get; private set; }
+
+
+
+        public Wheel(string position)
+
+        {
+
+            Position = position;
+
+        }
+
+
+
+        public void Spin() => Console.WriteLine($"{Position} wheel is spinning.");
+
+    }
+
+
+
+    class Car
+
+    {
+
+        private readonly IEngine _engine;
+
+        private readonly List<Wheel> _wheels;
+
+
+
+        public string Model { get; private set; }
+
+        public string Color { get; private set; }
+
+        public int FuelLevel { get; private set; }
+
+
+
+        public Car(IEngine engine, string model, string color, int fuelLevel)
+
+        {
+
+            _engine = engine;
+
+            Model = model;
+
+            Color = color;
+
+            FuelLevel = fuelLevel;
+
+
+
+            _wheels = new List<Wheel>
+
+            {
+
+                new Wheel("Front-Left"),
+
+                new Wheel("Front-Right"),
+
+                new Wheel("Rear-Left"),
+
+                new Wheel("Rear-Right")
+
+            };
+
+        }
+
+
+
+        public void Start()
+
+        {
+
+            if (FuelLevel > 0)
+
+            {
+
+                _engine.Start();
+
+                Console.WriteLine($"{Color} {Model} is now running.");
+
+            }
+
+            else
+
+            {
+
+                Console.WriteLine("Cannot start the car. Fuel level is too low!");
+
+            }
+
+        }
+
+
+
+        public void Drive()
+
+        {
+
+            if (FuelLevel > 0)
+
+            {
+
+                Console.WriteLine($"{Color} {Model} is driving...");
+
+                foreach (var wheel in _wheels)
+
+                {
+
+                    wheel.Spin();
+
+                }
+
+                _engine.Accelerate();
+
+                FuelLevel -= 10;
+
+                Console.WriteLine($"Remaining fuel: {FuelLevel}%.");
+
+            }
+
+            else
+
+            {
+
+                Console.WriteLine("Out of fuel. Refuel to drive.");
+
+            }
+
+        }
+
+
+
+        public void Stop()
+
+        {
+
+            _engine.Stop();
+
+            Console.WriteLine($"{Color} {Model} has stopped.");
+
+        }
+
+
+
+        public void Refuel(int amount)
+
+        {
+
+            FuelLevel += amount;
+
+            if (FuelLevel > 100) FuelLevel = 100;
+
+            Console.WriteLine($"{Color} {Model} refueled. Current fuel: {FuelLevel}%.");
+
+        }
+
+    }
+
+
+
+    class Program
+
+    {
+
+        static void Main(string[] args)
+
+        {
+
+            Car myCar = new Car(new PetrolEngine(), "Sedan", "Red", 50);
+
+
+
+            myCar.Start();
+
+            myCar.Drive();
+
+            myCar.Stop();
+
+            myCar.Refuel(30);
+
+            myCar.Drive();
+
+        }
+
+    }
+
+}
+
